@@ -1,19 +1,29 @@
 import polars as pl
 from scrapper import get_car_data
 
-def get_dataframe(index: int):
+url = f'https://www.supercarros.com/carros/cualquier-tipo/cualquier-provincia/Toyota/RAV4/?PagingPageSkip=0'
+
+
+def get_dataframe():
 
     try:
-        table_data = get_table_data(url, index)
-        print("Column data and Row data was successfully collected...")
+        car_data = get_car_data(url)
+        print("Car Data data was successfully collected...")
 
-        table_names = table_data[0]
-        table_row_data = table_data[1][1:]
+        schema = ["Price", "Year", "Model-Trim", "Description"]
 
-        df = pl.DataFrame(table_row_data, schema=table_names)
+        df = pl.DataFrame(car_data, schema=schema)
         print("Polars Dataframe has been created")
+
+        df = df.with_row_count()
+        df = df.rename({"row_nr": "id"})
+
         return df
 
     except Exception as e:
         print("An unexpected error occurred:", e)
+
+df = get_dataframe()
+
+print(df.head(5))
 
