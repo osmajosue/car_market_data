@@ -1,22 +1,29 @@
 from bs4 import BeautifulSoup
 import requests
+import math
 
-url = f'https://www.supercarros.com/carros/cualquier-tipo/cualquier-provincia/Toyota/RAV4/?PagingPageSkip=0'
+car_brand = "Toyota"
+car_model = "Land Cruiser Prado"
 
-def get_number_of_pages(url):
+# url = f'https://www.supercarros.com/carros/cualquier-tipo/cualquier-provincia/{car_brand}/{car_model}/?PagingPageSkip=0'
+
+def get_number_of_pages():
+
+    url = f'https://www.supercarros.com/carros/cualquier-tipo/cualquier-provincia/{car_brand}/{car_model}/?PagingPageSkip=0'
     
     response = requests.get(url)
 
     soup = BeautifulSoup(response.text, 'html.parser')
 
-    return round(int(soup.find('strong', id="LowerCounter2").text)/24)
+    return int(math.ceil(float(soup.find('strong', id="LowerCounter2").text)/24))
 
-def get_car_data(url):
 
+def get_car_data():
+    # url = f'https://www.supercarros.com/carros/cualquier-tipo/cualquier-provincia/{car_brand}/{car_model}/?PagingPageSkip={num_pages}'
     cars_per_page = []
 
-    for num_pages in range(get_number_of_pages(url)):
-        url = f'https://www.supercarros.com/carros/cualquier-tipo/cualquier-provincia/Toyota/RAV4/?PagingPageSkip={num_pages}'
+    for num_pages in range(get_number_of_pages()):
+        url = f'https://www.supercarros.com/carros/cualquier-tipo/cualquier-provincia/{car_brand}/{car_model}/?PagingPageSkip={num_pages}'
 
         response = requests.get(url)
 
