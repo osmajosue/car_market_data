@@ -1,8 +1,6 @@
 import polars as pl
 from scrapper import get_car_data
 
-# url = f'https://www.supercarros.com/carros/cualquier-tipo/cualquier-provincia/Toyota/RAV4/?PagingPageSkip=0'
-
 
 def get_dataframe():
 
@@ -10,7 +8,7 @@ def get_dataframe():
         car_data = get_car_data()
         print("Car Data data was successfully collected...")
 
-        schema = ["Price", "Year", "Model-Trim", "Description"]
+        schema = ["Precio", "Marca", "Modelo", "Año", "Motor", "Color Exterior", "Tipo", "Color Interior", "Uso", "Combustible", "Carga", "Transmision", "Puertas", "Traccion", "Pasajeros"]
 
         df = pl.DataFrame(car_data, schema=schema)
         print("Polars Dataframe has been created")
@@ -25,5 +23,5 @@ def get_dataframe():
 
 df = get_dataframe()
 
-print(df)
+print(df.head(50))
 

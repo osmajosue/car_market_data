@@ -4,8 +4,8 @@ import math
 
 car_brand = "Toyota"
 car_model = "Land Cruiser Prado"
+base_url = "https://www.supercarros.com"
 
-# url = f'https://www.supercarros.com/carros/cualquier-tipo/cualquier-provincia/{car_brand}/{car_model}/?PagingPageSkip=0'
 
 def get_number_of_pages():
 
@@ -19,7 +19,7 @@ def get_number_of_pages():
 
 
 def get_car_data():
-    # url = f'https://www.supercarros.com/carros/cualquier-tipo/cualquier-provincia/{car_brand}/{car_model}/?PagingPageSkip={num_pages}'
+
     cars_per_page = []
 
     for num_pages in range(get_number_of_pages()):
@@ -38,12 +38,53 @@ def get_car_data():
 
 
         for li in results_list:
-            price = li.find('div', class_="price").text
-            year = li.find('div', class_="year").text
-            model_trim = li.find('div', class_="title1").text
-            description = li.find('div', class_="title2").text.strip()
 
-            car_object = {"Price": price, "Year": year, "Model-Trim": model_trim, "Description": description}
-            cars_per_page.append(car_object)
+            link = str(li.a.get("href"))
 
+            link_response = requests.get(base_url+link)
+
+            soup = BeautifulSoup(link_response.text, 'html.parser')
+
+            car_model_header = soup.find('div', id="detail-ad-header")
+
+            car_model_h1 = car_model_header.find('h1').text
+
+            table = soup.find('table')
+
+            table_rows = []
+
+            rows = table.find_all('tr')
+
+            car_dict = {}
+            for row in rows:
+                row_data = row.find_all('td')
+                individual_row_data = [data.text.strip() for data in row_data]
+
+                table_rows.append(individual_row_data)
+
+                
+                for item in table_rows:
+                    if len(item) <= 2:
+                        key = item[0].rstrip(':')
+                        value = item[1]
+                        car_dict[key] = value
+                    else:
+                        key = item[0].rstrip(':')
+                        value = item[1]
+                        car_dict[key] = value
+
+                        key2 = item[2].rstrip(':')
+                        value2 = item[3]
+                        car_dict[key2] = value2
+
+                    car_dict["Marca"] = car_model_h1[:6]
+                    car_dict["Modelo"] = car_model_h1[:-5]
+                    car_dict["Año"] = car_model_h1[-4:]
+
+                # car_dict = {item[0].rstrip(':'): item[1] for item in table_rows}
+
+            cars_per_page.append(car_dict)
+            
     return cars_per_page
+    
+get_car_data()
