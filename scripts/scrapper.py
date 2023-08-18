@@ -2,8 +2,6 @@ from bs4 import BeautifulSoup
 import requests
 import math
 
-# car_brand = "Toyota"
-# car_model = "Land Cruiser Prado"
 base_url = "https://www.supercarros.com"
 
 
