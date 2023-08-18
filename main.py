@@ -1,5 +1,5 @@
-from processing_script import get_csv
-from load_script import load_csv_to_minio
+from scripts.processing_script import get_csv
+from scripts.load_script import load_csv_to_minio
 
 car_list = [("Toyota", "Rav4"), ("Toyota","Land Cruiser Prado"), ("Kia", "Sportage")]
 folder_path = 'CSV/'
