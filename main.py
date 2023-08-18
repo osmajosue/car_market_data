@@ -5,8 +5,10 @@ car_list = [("Toyota", "Rav4"), ("Toyota","Land Cruiser Prado"), ("Kia", "Sporta
 folder_path = 'CSV/'
 container = 'raw/'
 
-# for car in car_list:
-#     get_csv(car[0], car[1])
+if __name__ == "__main__":
+    for car in car_list:
+        get_csv(car[0], car[1])
+
+    load_csv_to_minio(folder_path, container)
 
 
-load_csv_to_minio(folder_path, container)
