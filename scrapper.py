@@ -2,14 +2,14 @@ from bs4 import BeautifulSoup
 import requests
 import math
 
-car_brand = "Toyota"
-car_model = "Land Cruiser Prado"
+# car_brand = "Toyota"
+# car_model = "Land Cruiser Prado"
 base_url = "https://www.supercarros.com"
 
 
-def get_number_of_pages():
-
-    url = f'https://www.supercarros.com/carros/cualquier-tipo/cualquier-provincia/{car_brand}/{car_model}/?PagingPageSkip=0'
+def get_number_of_pages(*args):
+    
+    url = f'{base_url}/carros/cualquier-tipo/cualquier-provincia/{args[0]}/{args[1]}/?PagingPageSkip=0'
     
     response = requests.get(url)
 
@@ -18,12 +18,13 @@ def get_number_of_pages():
     return int(math.ceil(float(soup.find('strong', id="LowerCounter2").text)/24))
 
 
-def get_car_data():
+def get_car_data(*args):
 
+    number_of_pages = get_number_of_pages(args[0], args[1])
     cars_per_page = []
 
-    for num_pages in range(get_number_of_pages()):
-        url = f'https://www.supercarros.com/carros/cualquier-tipo/cualquier-provincia/{car_brand}/{car_model}/?PagingPageSkip={num_pages}'
+    for num_pages in range(number_of_pages):
+        url = f'{base_url}/carros/cualquier-tipo/cualquier-provincia/{args[0]}/{args[1]}/?PagingPageSkip={num_pages}'
 
         response = requests.get(url)
 
@@ -81,10 +82,6 @@ def get_car_data():
                     car_dict["Modelo"] = car_model_h1[:-5]
                     car_dict["Año"] = car_model_h1[-4:]
 
-                # car_dict = {item[0].rstrip(':'): item[1] for item in table_rows}
-
             cars_per_page.append(car_dict)
             
     return cars_per_page
-    
-get_car_data()
