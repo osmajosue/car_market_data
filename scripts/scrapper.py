@@ -1,10 +1,16 @@
 from bs4 import BeautifulSoup
 import requests
 import math
+from dotenv import load_dotenv
+import os
+from scripts.utils import time_func
 
-base_url = "https://www.supercarros.com"
 
+load_dotenv()
 
+base_url = os.getenv("BASE_URL")
+
+@time_func
 def get_number_of_pages(*args):
     
     url = f'{base_url}/carros/cualquier-tipo/cualquier-provincia/{args[0]}/{args[1]}/?PagingPageSkip=0'
@@ -13,9 +19,17 @@ def get_number_of_pages(*args):
 
     soup = BeautifulSoup(response.text, 'html.parser')
 
-    return int(math.ceil(float(soup.find('strong', id="LowerCounter2").text)/24))
+    num_pages_text = soup.find('strong', id="LowerCounter2").text
+    print(num_pages_text)
 
+    if num_pages_text == "1,000+":
+        num_pages = 42
+    else:
+        num_pages = int(math.ceil(float(num_pages_text)/24))
+    
+    return num_pages
 
+@time_func
 def get_car_data(*args):
 
     number_of_pages = get_number_of_pages(args[0], args[1])
@@ -76,8 +90,8 @@ def get_car_data(*args):
                         value2 = item[3]
                         car_dict[key2] = value2
 
-                    car_dict["Marca"] = car_model_h1[:6]
-                    car_dict["Modelo"] = car_model_h1[:-5]
+                    car_dict["Marca"] = args[0]
+                    car_dict["Modelo"] = args[1]
                     car_dict["Año"] = car_model_h1[-4:]
 
             cars_per_page.append(car_dict)

@@ -9,6 +9,10 @@ requests = "*"
 polars = "*"
 minio = "*"
 python-dotenv = "*"
+sqlalchemy = "*"
+pandas = "*"
+psycopg2 = "*"
+pyarrow = "*"
 
 [dev-packages]
 
