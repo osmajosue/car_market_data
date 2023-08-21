@@ -1,0 +1,29 @@
+services:
+  pgdatabase:
+    image: postgres:14
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=car_market_data
+    volumes:
+      - "./pg_database:/var/lib/postgresql/data:rw"
+    ports:
+      - "5434:5432"
+    networks:
+      - pg-database
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=root
+    volumes:
+      - "./pgadmin_conn_data:/var/lib/pgadmin:rw"
+    ports:
+      - "8080:80"
+    networks:
+      - pg-database
+
+networks:
+  pg-database:
+    name: pg-database
